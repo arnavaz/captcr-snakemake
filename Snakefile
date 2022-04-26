@@ -71,7 +71,10 @@ rule assemble:
 		input:
 		      vdjca_ext=assembledir + "extended_" + "{id}" + ".vdjca"
 	        output:
-	              clns=assembledir  + "{id}" + ".clns"
+	              clns=assembledir  + "{id}" + ".clns",
+			log=logdir + "log_assemble_" + "{id}" +".txt "		
+		
+		    
 
 		shell:
 		      '''assemble + logdir + "log_assemble_" + "{id}" +".txt " +  assembledir + "extended_" + "{id}" +
@@ -99,4 +102,42 @@ rule export_B:
 	    shell:
 		
 		''' export "exportClones --chains TRB " + assembledir + "{id}" + ".clns " + {output.clones_B} ''' 		
+
+rule log_pars:
+	
+	input:
+		log=logdir + "log_assemble_" + "{id}" +".txt "
+	output: 
+		a1=logdir + "/assemble_stats.csv",
+		a2=logdir + "/align_stats.csv"
+	shell:
+		
+		''' python parse_log.py + "-i" +  logdir + "-o" + logdir'''
+		
+	
+rule run_QC_plotter:
+	
+	input:
+		a1=logdir + "/assemble_stats.csv",
+		a2=logdir + "/align_stats.csv"
+		
+	output:
+		qc="project_QC.pdf"
+		
+	shell:
+		
+		''' Rscript mixcr_QCplot.R {input.a1} {input.a2} projectname '''
+rule run_clone_tracker_TRA:
+	
+	input:
+		clones_A=clonesdir + "CLONES_TRA" + "{id}",
+		clones_B=clonesdir + "CLONES_TRB" + "{id}",
+	output:
+		clone_tra = "clonetrack_" + pattern + {input.clones_A} + ".pdf",
+		clone_trb = "clonetrack_" + pattern + {input.clones_B} + ".pdf",
+		
+		
+		
+	
+	
 	
