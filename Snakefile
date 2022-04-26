@@ -79,9 +79,24 @@ rule assemble:
 
 
 rule export_A:
-
-
-
-
-
-
+	    input:
+		   clns=assembledir  + "{id}" + ".clns"
+		
+	    output:
+          	   clones_A=  clonesdir + "CLONES_TRA" + "{id}"	
+		
+	
+	shell:
+		
+		''' export "exportClones --chains TRA " + assembledir + "{id}" + ".clns " + output.clones_A '''
+rule export_B:
+	
+	    input:
+		   clns=assembledir  + "{id}" + ".clns"
+	    output:
+          	   clones_B=  clonesdir + "CLONES_TRB" + "{id}"		
+	
+	    shell:
+		
+		''' export "exportClones --chains TRB " + assembledir + "{id}" + ".clns " + output.clones_B ''' 		
+	
