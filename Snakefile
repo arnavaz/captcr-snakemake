@@ -27,7 +27,7 @@ rule align:
 	output: 
 		vdjca = aligndir + "alignments_" + "{id}" + ".vdjca"
 	shell:
-		java_align +  logdir + "/{id}.txt " + cwd  + "/{input.fastq1}" + cwd "/{input.fastq2" + output.vdjca	
+		'''java_align +  logdir + "/{id}.txt " + cwd  + "/{input.fastq1}" + cwd "/{input.fastq2" + output.vdjca	'''
 
 
 rule assemble1:
@@ -39,7 +39,7 @@ rule assemble1:
 	       vdjca_res1= assembledir + "rescue1_" +"{id}"+ ".vdjca"
 		
 	shell:
-               ""assemble1 + aligndir + "alignments_" + "{id}" + ".vdjca " + output.vdjca_res1
+               '''assemble1 + aligndir + "alignments_" + "{id}" + ".vdjca " + output.vdjca_res1'''
 
 
 
@@ -53,7 +53,7 @@ rule assemble2:
 
 	shell:
 
-	       assemble1 + assembledir +  "rescue1_" + "{id}" + ".vdjca " + output.vdjca_res2
+	       '''assemble1 + assembledir +  "rescue1_" + "{id}" + ".vdjca " + output.vdjca_res2'''
 
 rule assembleEx:
 
@@ -63,7 +63,7 @@ rule assembleEx:
 	output:
                vdjca_ext=assembledir + "extended_" + "{id}" + ".vdjca"
 	shell:
-	      assembleEx + assembledir + "rescue2_" + "{id}" + ".vdjca " + output.vdjca_ext
+	      '''assembleEx + assembledir + "rescue2_" + "{id}" + ".vdjca " + output.vdjca_ext'''
 
 
 rule assemble:
@@ -74,7 +74,8 @@ rule assemble:
 	              clns=assembledir  + "{id}" + ".clns"
 
 		shell:
-		      assemble + logdir + "log_assemble_" + "{id}" +".txt " +  assembledir + "extended_" + "{id}" + ".vdjca " + assembledir  + "{id" + ".clns"
+		      '''assemble + logdir + "log_assemble_" + "{id}" +".txt " +  assembledir + "extended_" + "{id}" +
+		      ".vdjca " + assembledir  + "{id" + ".clns" '''
 
 
 rule export_A:
