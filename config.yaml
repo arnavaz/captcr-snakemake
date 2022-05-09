@@ -1,5 +1,5 @@
 input:
 basedir:
-barcodes:
+barcodes: /path/to/barcode_list
 dependencies:
-extract_python_code:
+extract_python_code: /path/to/extract_barcode_code
