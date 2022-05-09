@@ -1,5 +1,5 @@
 #### This Snakemake file is to generare mixcr clones files from the fastqs###
-
+snakefile: "/path/to/extract.smk"
 configfile: "config.yaml"
 ###values for running mixcr### these should be set in the config file###
 
@@ -11,6 +11,7 @@ export="java -jar  mixcr.jar exportClones"
 aligndir=config['aligndir']
 basedir= config['basedir']
 clonetrack=config['clonetrack']
+logdir=config['logdir']
 ###  Rules #####
 
 rule all:
@@ -21,15 +22,15 @@ rule all:
 rule align:
 
 	input:
-		fastq1="basedir/{id}_barcode_R1.fastq",
-		fastq2="basedir/{id}_barcode_R2.fastq",
+	      R1 = expand("basedir/{id}_barcode_R1.fastq", id=IDS1),
+	      R2 = expand("basedir/{id}_barcode_R1.fastq", id=IDS2)
 
 
 	
 	output: 
-		vdjca = aligndir + "alignments_" + "{id}" + ".vdjca"
+		vdjca = "aligndir/alignments_{id}.vdjca"
 	shell:
-		'''java_align +  logdir + "/{id}.txt " + cwd  + "/{input.fastq1}" + cwd "/{input.fastq2}" + output.vdjca	'''
+		'''java_align +  logdir + "/{id}.txt " + basedir + "/{input.R1}" + basedir "/{input.R2}" + output.vdjca'''
 
 
 rule assemble1:
