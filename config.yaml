@@ -2,4 +2,4 @@ input:
 basedir:
 barcodes: /path/to/barcode_list
 dependencies:
-extract_python_code: /path/to/extract_barcode_code
+extract_barcodes_path: /path/to/extract_barcode_code
