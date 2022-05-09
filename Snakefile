@@ -1,26 +1,28 @@
 #### This Snakemake file is to generare mixcr clones files from the fastqs###
 
-configfile: "path/to/config.yaml"
+configfile: "config.yaml"
 ###values for running mixcr### these should be set in the config file###
 
-java_align = "java -jar $mixcr_dir/mixcr.jar  align -p rna-seq -s hsa -OallowPartialAlignments=true -OvParameters.geneFeatureToAlign=VGeneWithP -r "
-assemble1 = "java -jar $mixcr_dir/mixcr.jar assemblePartial " 
-assembleEx="java -jar $mixcr_dir/mixcr.jar extendAlignments "
-export="java -jar $mixcr_dir/mixcr.jar exportClones"
-aligndir=
+java_align = "java -jar  mixcr.jar  align -p rna-seq -s hsa -OallowPartialAlignments=true -OvParameters.geneFeatureToAlign=VGeneWithP -r "
+assemble1 = "java -jar   mixcr.jar assemblePartial " 
+assembleEx="java -jar   mixcr.jar extendAlignments "
+export="java -jar  mixcr.jar exportClones"
 
+aligndir=config['aligndir']
+basedir= config['basedir']
+clonetrack=config['clonetrack']
 ###  Rules #####
 
 rule all:
-         input= expand("clone_track" + "{sample}.{param}.output.pdf", sample=config["samples"], param=config["patterns"])
+         input= expand("clone_track" + "{sample}.{param}.output.pdf", param=config["patterns"])
 
 
 
 rule align:
 
 	input:
-		fastq1=cwd + "/{id}_barcode_R1.fastq",
-		fastq2=cwd + "/{id}_barcode_R2.fastq",
+		fastq1="basedir/{id}_barcode_R1.fastq",
+		fastq2="basedir/{id}_barcode_R2.fastq",
 
 
 	
