@@ -1,7 +1,7 @@
 
 import os
 import sys
-input = 
+configfile: "config.yaml"
 basedir =
 IDS1, = glob_wildcards(input{id}.fastq.gz")
 IDS2, = glob_wildcards("thedir/{id}.fastq.gz")
