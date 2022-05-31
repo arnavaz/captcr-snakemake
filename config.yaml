@@ -3,3 +3,9 @@ basedir:
 barcodes: /path/to/barcode_list
 dependencies:
 extract_barcodes_path: /path/to/extract_barcode_code
+basedir :
+inputdir :
+aligndir :
+clonetrack :
+logdir :
+pars_log :
