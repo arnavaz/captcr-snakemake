@@ -21,7 +21,7 @@ export="java -jar  mixcr.jar exportClones"
 
 rule all:
     input: 
-	    expand("outputdir/clone_track + {id}.{param}.pdf", param=config["patterns"])
+	  expand("outputdir/clone_track + {id}.{param}.pdf", param=config["patterns"])
 
 		
 IDS1, = glob_wildcards("inputdir/{id}_R1.fastq.gz")
