@@ -214,3 +214,18 @@ plot_clonetracks.fx <- function(compldfle, plotpath, chain, countfrac, clnefrc){
   dev.off()
 
 }
+
+args = commandArgs(trailingOnly=TRUE)
+if (length(args)==0) {
+  stop("At least one argument must be supplied (input file).n", call.=FALSE)
+} 
+datapath=args[1]
+pattern=args[2]
+type=args[3]
+flelst <- list.files(datapath,
+                     recursive = F,
+                     pattern = paste0(type, ""))
+
+pt_df <- cdr3_dataframe.fx(datapath, type, flelst[grepl(patt, flelst)], "inframe")
+plot_clonetracks.fx(pt_df, datapath, type, "cloneFraction", 0) 
+
