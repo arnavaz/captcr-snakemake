@@ -5,6 +5,7 @@ inputdir = config['inputdir']
 aligndir=config['aligndir']
 clonetrack=config['clonetrack']
 logdir=config['logdir']
+pars_log=config['pars_log_path']
 
 ###values for running mixcr### these should be set in the config file###
 
@@ -60,106 +61,134 @@ rule align:
 	output: 
 		vdjca = "aligndir/alignments_{id}.vdjca"
 	shell:
-		'''java_align +  logdir + "/{id}.txt " + basedir + "/{input.R1}" + basedir "/{input.R2}" + output.vdjca'''
+		'''{java}  
+		   logdir/{id}.txt  
+		   basedir/{input.R1}
+		   basedir/{input.R2} 
+		   output.vdjca
+		   '''.format(java=java_aling)
 
 
 rule assemble1:
 
 	input:
-	       vdjca = aligndir + "alignments_" + "{id}" + ".vdjca"
+	       vdjca = "aligndir/alignments_{id}.vdjca"
 
 	output:
-	       vdjca_res1= assembledir + "rescue1_" +"{id}"+ ".vdjca"
+	       vdjca_res1= "assembledir/rescue1_{id}.vdjca"
 		
 	shell:
-               '''assemble1 + aligndir + "alignments_" + "{id}" + ".vdjca " + {output.vdjca_res1}'''
+               '''{assemble}
+	           aligndir/alignments_{id}.vdjca 
+		  {output.vdjca_res1}
+	       '''.format(assemble=assemble1)
 
 
 
 rule assemble2:
 
 	input:
-	       vdjca_res1 = "rescue1_" +"{id}"+ ".vdjca"
+	       vdjca_res1 = "rescue1_{id}.vdjca"
 
 	output:
-	        vdjca_res2=assembledir + "rescue2_" + "{id}" + ".vdjca"
+	        vdjca_res2=assembledir/rescue2_{id}.vdjca"
 
 	shell:
 
-	       '''assemble1 + assembledir +  "rescue1_" + "{id}" + ".vdjca " + {output.vdjca_res2}'''
+	       '''{assemble}
+	          assembledir/rescue1_{id}.vdjca 
+		  {output.vdjca_res2}
+	       '''.format(assemble=assemble1)
 
 rule assembleEx:
 
 	input:
-		vdjca_res2=assembledir + "rescue2_" + "{id}" + ".vdjca"
+		vdjca_res2=assembledir/rescue2_{id}.vdjca"
 
 	output:
-               vdjca_ext=assembledir + "extended_" + "{id}" + ".vdjca"
+               vdjca_ext=assembledir/extended_{id}.vdjca"
 	shell:
-	      '''assembleEx + assembledir + "rescue2_" + "{id}" + ".vdjca " + {output.vdjca_ext}'''
+	      '''{assemble}
+	         assembledir/rescue2_{id}.vdjca 
+		 {output.vdjca_ext}
+	      '''.format(assemble=assembleEx)
 
 
 rule assemble:
 
-		input:
-		      vdjca_ext=assembledir + "extended_" + "{id}" + ".vdjca"
-	        output:
-	              clns=assembledir  + "{id}" + ".clns",
-			log=logdir + "log_assemble_" + "{id}" +".txt "		
+	input:
+		vdjca_ext=assembledir/extended_{id}.vdjca"
+	output:
+	        clns=assembledir/{id}.clns",
+		log=logdir/log_assemble_id}.txt "		
 		
 		    
 
-		shell:
-		      '''assemble + logdir + "log_assemble_" + "{id}" +".txt " +  assembledir + "extended_" + "{id}" +
-		      ".vdjca " + {output.clns} '''
+	shell:
+	      '''{assemble}
+		 logdir/log_assemble_{id}.txt 
+	         assembledir/extended_{id}.vdjca
+	         {output.clns} 
+	     '''.format(assemble=
 
 
 rule export_A:
 	    input:
-		   clns=assembledir  + "{id}" + ".clns"
+		   clns="assembledir/{id}.clns"
 		
 	    output:
-          	   clones_A=  clonesdir + "CLONES_TRA" + "{id}"	
+          	   clones_A= "clonesdir/CLONES_TRA_{id}.txt"	
 		
 	
 	shell:
 		
-		''' export "exportClones --chains TRA " + assembledir + "{id}" + ".clns " + {output.clones_A} '''
+		'''export 
+		  exportClones --chains TRA
+		  assembledir/{id}.clns  {output.clones_A}
+		'''
 rule export_B:
 	
 	    input:
-		   clns=assembledir  + "{id}" + ".clns"
+		   clns="assembledir/{id}.clns"
 	    output:
-          	   clones_B=  clonesdir + "CLONES_TRB" + "{id}"		
+          	   clones_B="clonesdir/CLONES_TRB_{id}.txt"		
 	
-	    shell:
+       shell:
 		
-		''' export "exportClones --chains TRB " + assembledir + "{id}" + ".clns " + {output.clones_B} ''' 		
+		'''export 
+		exportClones --chains TRB
+		assembledir  {id}.clns
+	        {output.clones_B}
+	        ''' 		
 
 rule log_pars:
 	
 	input:
-		log=logdir + "log_assemble_" + "{id}" +".txt "
+		log="logdir/log_assemble_{id}.txt"
 	output: 
-		a1=logdir + "/assemble_stats.csv",
-		a2=logdir + "/align_stats.csv"
+		a1="logdir/assemble_stats.csv",
+		a2="logdir/align_stats.csv"
 	shell:
 		
-		''' python parse_log.py + "-i" +  logdir + "-o" + logdir'''
+		''' python {parse_log} + "-i" +  logdir + "-o" + logdir
+		'''.format(par_log=confgi['pars_log_path'])
 		
 	
 rule run_QC_plotter:
 	
 	input:
-		a1=logdir + "/assemble_stats.csv",
-		a2=logdir + "/align_stats.csv"
+		a1="logdir/assemble_stats.csv",
+		a2="logdir/align_stats.csv"
 		
 	output:
 		qc="project_QC.pdf"
 		
 	shell:
 		
-		''' Rscript mixcr_QCplot.R {input.a1} {input.a2} projectname '''
+		''' Rscript {mixcr_qc}
+		    {input.a1} 
+		    {input.a2} 
+		    projectname '''
 rule run_clone_tracker_TRA:
 	
 	input:
