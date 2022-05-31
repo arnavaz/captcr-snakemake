@@ -170,7 +170,8 @@ rule log_pars:
 		a2="logdir/align_stats.csv"
 	shell:
 		
-		''' python {parse_log} + "-i" +  logdir + "-o" + logdir
+		''' python {parse_log} 
+		-i"  logdir  -o" logdir
 		'''.format(par_log=confgi['pars_log_path'])
 		
 	
@@ -188,15 +189,15 @@ rule run_QC_plotter:
 		''' Rscript {mixcr_qc}
 		    {input.a1} 
 		    {input.a2} 
-		    projectname '''
-rule run_clone_tracker_TRA:
+	        '''
+rule  clone_tracker:
 	
 	input:
-		clones_A=clonesdir + "CLONES_TRA" + "{id}",
-		clones_B=clonesdir + "CLONES_TRB" + "{id}",
+		clones='''clonesdir/CLONES_{chain}_{id}.txt'''.format(chain=config['chain'])
+		
 	output:
-		clone_tra = "clonetrack_" + pattern + {input.clones_A} + ".pdf",
-		clone_trb = "clonetrack_" + pattern + {input.clones_B} + ".pdf",
+		clone_tra = "clonetrack_" + pattern + {input.clones}.pdf",
+		
 		
 		
 		
