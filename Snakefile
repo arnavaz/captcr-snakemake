@@ -12,6 +12,7 @@ pars_log=config['pars_log_path']
 java_align = "java -jar  mixcr.jar  align -p rna-seq -s hsa -OallowPartialAlignments=true -OvParameters.geneFeatureToAlign=VGeneWithP -r "
 assemble1 = "java -jar   mixcr.jar assemblePartial " 
 assembleEx="java -jar   mixcr.jar extendAlignments "
+assemble_f="java -jar /cluster/tools/software/centos7/mixcr/3.0.12/mixcr.jar assemble -r"
 export="java -jar  mixcr.jar exportClones"
 
 
@@ -66,7 +67,7 @@ rule align:
 		   basedir/{input.R1}
 		   basedir/{input.R2} 
 		   output.vdjca
-		   '''.format(java=java_aling)
+		   '''.format(java=java_align)
 
 
 rule assemble1:
@@ -120,16 +121,14 @@ rule assemble:
 		vdjca_ext=assembledir/extended_{id}.vdjca"
 	output:
 	        clns=assembledir/{id}.clns",
-		log=logdir/log_assemble_id}.txt "		
-		
-		    
+		log=logdir/log_assemble_id}.txt "			    
 
 	shell:
 	      '''{assemble}
 		 logdir/log_assemble_{id}.txt 
 	         assembledir/extended_{id}.vdjca
 	         {output.clns} 
-	     '''.format(assemble=
+	     '''.format(assemble=assemble_f)
 
 
 rule export_A:
@@ -163,18 +162,15 @@ rule export_B:
 
 rule log_pars:
 	
-	input:
-		log="logdir/log_assemble_{id}.txt"
 	output: 
 		a1="logdir/assemble_stats.csv",
 		a2="logdir/align_stats.csv"
 	shell:
 		
 		''' python {parse_log} 
-		-i"  logdir  -o" logdir
-		'''.format(par_log=confgi['pars_log_path'])
+		           -i  logdir  -o logdir
+		'''.format(pars_log=confgi['pars_log_path'])
 		
-	
 rule run_QC_plotter:
 	
 	input:
@@ -203,7 +199,7 @@ rule  clone_tracker:
 		   clonesdir
 		   {param}
 		   {type}
-		'''.format(param=config['pattern'], type= confiog['chain])  
+		'''.format(param=config['pattern'], type= config['chain])  
 		   
 		
 		
