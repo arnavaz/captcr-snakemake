@@ -1,4 +1,4 @@
-#### This Snakemake file is to generare mixcr clones files from the fastqs###
+#### This Snakemake file is to generate mixcr clones tracking figures from the fastqs###
 configfile: "config.yaml"
 basedir = config['basedir']
 inputdir = config['inputdir']
@@ -15,8 +15,8 @@ assembleEx="java -jar   mixcr.jar extendAlignments "
 assemble_f="java -jar /cluster/tools/software/centos7/mixcr/3.0.12/mixcr.jar assemble -r"
 export="java -jar  mixcr.jar exportClones"
 
-
-
+IDS1, = glob_wildcards("inputdir/{id}_R1.fastq.gz")
+IDS2, = glob_wildcards("inputdir/{id}_R2.fastq.gz")
 
 ###  Rules ####
 
@@ -25,8 +25,6 @@ rule all:
 	  expand("outputdir/clone_track_{id}.{param}.pdf", param=config["patterns"])
 
 		
-IDS1, = glob_wildcards("inputdir/{id}_R1.fastq.gz")
-IDS2, = glob_wildcards("inputdir/{id}_R2.fastq.gz")
 
 rule extract:
 	
