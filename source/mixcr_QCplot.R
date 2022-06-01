@@ -116,3 +116,14 @@ mixcrQC.fx <- function(datapath, alignstatsfile, assemblestatsfile, plotname, pl
     message("plot file exists: ", plotname)
   }
 }
+
+args = commandArgs(trailingOnly=TRUE)
+if (length(args)==0) {
+  stop("At least one argument must be supplied (input file).n", call.=FALSE)
+} 
+logdir =args[1]
+mixcrQC.fx(logdir, "align_stats.csv", 
+           "assemble_stats.csv", 
+           "project_QC.pdf", logdir)
+
+
