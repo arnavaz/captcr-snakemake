@@ -6,7 +6,7 @@ aligndir=config['aligndir']
 clonetrack=config['clonetrack']
 logdir=config['logdir']
 pars_log=config['pars_log_path']
-
+mixcr_path=config['mixcr_path']
 ###values for running mixcr### these should be set in the config file###
 
 java_align = "java -jar  mixcr.jar  align -p rna-seq -s hsa -OallowPartialAlignments=true -OvParameters.geneFeatureToAlign=VGeneWithP -r "
@@ -190,10 +190,10 @@ rule  clone_tracker:
 		clones='''clonesdir/CLONES_{chain}_{id}.txt'''.format(chain=config['chain'])
 		
 	output:
-		clonetrack="clonesdir/clone_track_{id}.{param}.pdf".format(param=config['patterns'])
+		clones_pdf="clonesdir/clone_track_{id}.{param}.pdf".format(param=config['patterns'])
 		
 	shell:
-		'''Rscript clonetracker.R 
+		'''Rscript {clonetracker} 
 		   clonesdir
 		   {param}
 		   {type}
