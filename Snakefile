@@ -21,7 +21,7 @@ export="java -jar  mixcr.jar exportClones"
 
 rule all:
     input: 
-	  expand("outputdir/clone_track + {id}.{param}.pdf", param=config["patterns"])
+	  expand("outputdir/clone_track_{id}.{param}.pdf", param=config["patterns"])
 
 		
 IDS1, = glob_wildcards("inputdir/{id}_R1.fastq.gz")
@@ -196,9 +196,15 @@ rule  clone_tracker:
 		clones='''clonesdir/CLONES_{chain}_{id}.txt'''.format(chain=config['chain'])
 		
 	output:
-		clone_tra = "clonetrack_" + pattern + {input.clones}.pdf",
+		clonetrack="clonesdir/clone_track_{id}.{param}.pdf".format(param=config['patterns'])
 		
-		
+	shell:
+		'''Rscript clonetracker.R 
+		   clonesdir
+		   {param}
+		   {type}
+		'''.format(param=config['pattern'], type= confiog['chain])  
+		   
 		
 		
 	
